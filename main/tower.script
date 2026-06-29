@@ -1,0 +1,100 @@
+local msg_contact_point_response = hash("contact_point_response")
+local msg_animation_done = hash("animation_done")
+local msg_trigger_response = hash("trigger_response")
+local msg_collision_response = hash("collision_response")
+local msg_killed = hash("set_kills")
+
+local group_arrow = hash("arrow")
+
+function init(self)
+	self.health = 1000
+	self.kills = 0
+	print(msg.url())
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == msg_killed then
+		self.kills = message.msg_kills
+	end
+
+	
+	if message_id == msg_collision_response then
+		if message.other_group == group_arrow then
+			go.delete(message.other_id)
+			local damage = 10
+
+			if self.kills > 99 then
+				damage = 100
+			elseif self.kills > 89 then
+				damage = 90
+			elseif self.kills > 79 then
+				damage = 80
+			elseif self.kills > 69 then
+				damage = 70
+			elseif self.kills > 59 then
+				damage = 60
+			elseif self.kills > 49 then
+				damage = 50	
+			elseif self.kills > 39 then
+				damage = 50
+			elseif self.kills > 29 then
+				damage = 40
+			elseif self.kills > 19 then
+				damage = 30
+			elseif self.kills > 9 then
+				damage = 20
+			end
+
+			self.health = self.health - damage
+			if self.health < 0 then
+				self.health = 0
+			end
+			
+			msg.post("default:/LifeBarTowerC#lifebar", "set_health_tower", {health = self.health, max_health = 1000})
+			if self.health == 0 then
+				--go.delete()
+				msg.post("proxy:/controller#controllerScript", "set_result", {result = self.kills})
+				msg.post("proxy:/controller#controllerScript", "show_gameover")
+			end
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end

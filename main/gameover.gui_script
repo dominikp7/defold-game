@@ -1,0 +1,24 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	msg.post("proxy:/controller#controllerScript", "get_result")
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.released then
+		if gui.pick_node(gui.get_node("restart"), action.x, action.y) then
+			print(msg.url())
+
+			--timer.delay(5, false, function()  msg.post("proxy:/controller#controllerScript", "show_game")  end)
+			msg.post("proxy:/controller#controllerScript", "show_game")
+			print(msg.url())
+		end
+		
+	end
+end
+
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("change_result") then
+		gui.set_text(gui.get_node("result"), "Result: " .. message.result )
+	end
+end

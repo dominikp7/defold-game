@@ -1,0 +1,41 @@
+
+
+
+local function show(self, proxy)
+	if self.current_proxy then
+		msg.post(self.current_proxy, "unload")
+		self.current_proxy = nil
+	end
+	msg.post(proxy, "async_load")
+end
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.current_proxy = nil
+	msg.post("#", "show_menu")
+	self.result = 0
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("show_menu") then
+		show(self, "#startProxy")
+	elseif message_id == hash("show_game") then
+		show(self, "#mainProxy")
+	elseif message_id == hash("show_gameover") then
+		show(self, "#gameoverProxy")
+	elseif message_id == hash("proxy_loaded") then
+		self.current_proxy = sender
+		msg.post(sender, "enable")
+	elseif message_id == hash("proxy_unloaded") then
+		print("Unloaded", sender)
+	end
+
+
+	if message_id == hash("set_result") then
+		self.result = message.result
+	end
+
+	if message_id == hash("get_result") then
+		msg.post(sender, "change_result", {result = self.result})
+	end
+end

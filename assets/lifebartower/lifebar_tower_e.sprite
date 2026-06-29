@@ -1,0 +1,4 @@
+tile_set: "/assets/lifebartower/lifebar_tower.atlas"
+default_animation: "LifeBarTowerEmpty"
+material: "/builtins/materials/sprite.material"
+blend_mode: BLEND_MODE_ALPHA

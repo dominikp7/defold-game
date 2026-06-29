@@ -1,0 +1,37 @@
+local set_healt = hash("set_health")
+local set_healt_tower = hash("set_health_tower")
+
+
+function init(self)
+	
+end
+
+
+function on_message(self, message_id, message, sender)
+	if message_id == set_healt then
+		self.max_health = message.max_health
+		self.health = message.health
+		local scale = go.get_scale("LifeBarComplete")
+		scale.x = (self.health/self.max_health)+0.001
+		if self.health <= 0 then
+			go.delete("#LifeBarComplete")
+		end
+		go.set_scale(scale, "LifeBarComplete")
+	end
+
+	if message_id == set_healt_tower then
+		self.max_health = message.max_health
+		self.health = message.health
+		local scale = go.get_scale("LifeBarTowerC")
+		scale.x = (self.health/self.max_health)+0.001
+		if self.health <= 0 then
+			go.delete("#LifeBarTowerC")
+		end
+		go.set_scale(scale, "LifeBarTowerC")
+	end
+
+
+	
+	
+end
+

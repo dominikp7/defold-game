@@ -1,0 +1,50 @@
+
+function init(self)
+	local enemy_ids = collectionfactory.create("#enemyFactory")
+	self.max_elements = 4
+	self.counter = 2
+	self.dead = 0
+	self.timer = timer.delay(5, true, function(self)  self.counter = self.counter + 1 collectionfactory.create("#enemyFactory")  end)
+	timer.get_info(self.timer)
+	self.initi_position = go.get_position()
+	self.second_position = vmath.vector3(go.get_position().x - 200, go.get_position().y, go.get_position().z)
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	local x = self.counter - self.dead
+	if x > self.max_elements then
+		timer.cancel(self.timer)
+	end
+
+	if self.counter % 2 == 0 then
+		go.set_position(self.initi_position)
+	else
+		go.set_position(self.second_position)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	print(self)
+	if message_id == hash("killed") then
+		self.dead = self.dead + 1
+		local x = self.counter - self.dead
+		if x < self.max_elements then		
+			collectionfactory.create("#enemyFactory")
+			self.counter = self.counter + 1
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	
+end
+
+function on_reload(self)
+	
+end
