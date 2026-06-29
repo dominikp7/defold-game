@@ -1,0 +1,5 @@
+*.script linguist-language=Lua
+*.gui_script linguist-language=Lua
+*.render_script linguist-language=Lua
+
+game.project linguist-documentation
